@@ -1,0 +1,150 @@
+import javafx.application.Application;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.Slider;
+import javafx.scene.effect.DropShadow;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+import javafx.scene.media.MediaView;
+import javafx.scene.paint.Color;
+import javafx.stage.Stage;
+import java.net.URL;
+import java.time.Duration;
+
+public class Main extends Application {
+Media media;
+MediaPlayer mediaPlayer;
+MediaView mediaView;
+DropShadow dropShadow;
+URL mediaURL;
+Button playButton;
+Button stopButton;
+Button pauseButton;
+Slider volumeSlider;
+Slider timeSlider;
+Duration duration;
+
+    public static void main(String[] args) {
+        launch(args);
+    }
+
+    @Override
+    public void start(Stage primaryStage) throws Exception {
+
+        //media classPath
+        mediaURL = getClass().getResource("media/Ralph.mp4");
+
+        //mediaURL = getClass().getResource("Cars.mp4");
+        String mediaStringURL = mediaURL.toExternalForm();
+
+
+
+        // Create a Media
+        media = new Media(mediaStringURL);
+
+        //Create a Media Player
+        mediaPlayer = new MediaPlayer(media);
+        mediaPlayer.setAutoPlay(true);
+
+        //Create a Media View
+        mediaView = new MediaView(mediaPlayer);
+        mediaView.setFitWidth(700);
+        mediaView.setFitHeight(500);
+        mediaView.setSmooth(true);
+
+
+        //Create the DropShadow effect
+        dropShadow = new DropShadow();
+        dropShadow.setOffsetX(5.0);
+        dropShadow.setOffsetY(5.0);
+        dropShadow.setColor(Color.WHITE);
+
+        mediaView.setEffect(dropShadow);
+
+        //Create a Slider
+        volumeSlider = new Slider(0.0, 1.0, 0.5);
+        volumeSlider.setMajorTickUnit(0.1);
+        volumeSlider.setShowTickLabels(true);
+        volumeSlider.valueProperty().addListener(e->setVolumeSlider());
+
+
+        //Create a TimeSlider
+
+        timeSlider = new Slider();
+       // timeSlider.valueProperty().addListener(e->setTimeSlider());
+
+
+        //Create the Buttons
+        playButton = new Button("Play");
+        stopButton = new Button("Stop");
+        pauseButton = new Button("Pause");
+        playButton.setOnAction(e->setPlayButton());
+        stopButton.setOnAction(e->setStopButton() );
+        pauseButton.setOnAction(e->setPauseButton());
+        //Create the Hbox
+        HBox controlBox = new HBox(5, playButton,pauseButton, stopButton, volumeSlider, timeSlider);
+        //Create the Vbox
+        VBox root = new VBox(5, mediaView,controlBox);
+
+        //Create the Scene
+        Scene scene = new Scene(root);
+        primaryStage.setScene(scene);
+        primaryStage.show();
+
+
+    }
+    //All setOnAction functions
+    public void setPlayButton(){
+        if (mediaPlayer.getStatus() == MediaPlayer.Status.PLAYING){
+            mediaPlayer.stop();
+            mediaPlayer.play();
+        }
+        else{
+            mediaPlayer.play();
+        }
+    }
+    public void setStopButton(){
+        mediaPlayer.stop();
+    }
+    public void setPauseButton(){
+        mediaPlayer.pause();
+    }
+    public void setVolumeSlider(){
+        if (volumeSlider.isValueChanging()){
+            mediaPlayer.setVolume(volumeSlider.getValue());
+        }
+    }
+
+  //Допилить
+/*    public void setTimeSlider(){
+        if (timeSlider.isValueChanging()){
+            mediaPlayer.seek(duration.multipliedBy(timeSlider.getValue()/100));
+
+        }
+    }
+*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+}
